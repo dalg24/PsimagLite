@@ -1,0 +1,7 @@
+spack:
+  specs:
+  - ninja
+  - blas
+  - lapack
+  - openmpi
+  - hdf5 +cxx +fortran +hl +mpi ^openmpi
