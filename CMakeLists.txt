@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.22)
 project(
   psimaglite
   VERSION 1.1
-  LANGUAGES CXX)
+  LANGUAGES CXX C)
 
 set(PROJECT_CMAKE ${psimaglite_SOURCE_DIR}/CMake)
 message("Project CMake: ${PROJECT_CMAKE}")
