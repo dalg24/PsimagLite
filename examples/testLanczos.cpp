@@ -5,8 +5,9 @@
 
 /* This example does Lanczos for a (small) matrix in RAM 
  * using PsimagLite's Lanczos solver */
-int main()
+int main(int argc, char* argv[])
 {
+	PsimagLite::Concurrency whatever(&argc, &argv, 1);
 	using ComplexType = std::complex<double>;
 	using SolverParametersType = PsimagLite::ParametersForSolver<double>;
 	using VectorType = std::vector<ComplexType>;
