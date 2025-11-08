@@ -2,7 +2,12 @@ spack:
   view: false
   specs:
   - matrix:
-    - - autoconf
+    - - ninja
+      - boost
+      - blas
+      - lapack
+      - openmpi
+      - hdf5 +cxx +fortran +hl +mpi ^openmpi
   concretizer:
     unify: false
   config:
