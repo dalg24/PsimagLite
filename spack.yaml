@@ -1,5 +1,4 @@
 spack:
-  view: false
   specs:
   - ninja
   - blas
