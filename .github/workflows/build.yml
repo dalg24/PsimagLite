@@ -28,11 +28,6 @@ jobs:
     - name: Find compilers
       run: spack -e . compiler find --mixed-toolchain
 
-    - name: Set buildcache
-      run: |
-        spack mirror add --unsigned upstream oci://ghcr.io/spack/github-actions-buildcache
-        spack mirror add --unsigned github-actions-buildcache oci://ghcr.io/dalg24/PsimagLite
-
     - name: Concretize (fresh)
       run: spack -e . -v concretize --fresh
       if: ${{ github.event.inputs.fresh == 'true' }}
@@ -51,6 +46,5 @@ jobs:
         GITHUB_USER: ${{ github.actor }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
-        spack mirror set --push --oci-username-variable GITHUB_USER --oci-password-variable GITHUB_TOKEN PsimagLite
-        spack -e . buildcache push -j $(($(nproc) + 1)) --base-image ubuntu:24.04 --update-index PsimagLite
+        spack -e . buildcache push -j $(($(nproc) + 1)) --base-image ubuntu:24.04 --update-index local-buildcache
       if: ${{ !cancelled() }}
