@@ -1,0 +1,14 @@
+spack:
+  view: false
+  specs:
+  - matrix:
+    - - autoconf
+  concretizer:
+    unify: false
+  config:
+    install_tree:
+      root: /opt/spack
+      padded_length: 128
+  packages:
+    all:
+      require: target=x86_64_v3

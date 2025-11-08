@@ -1,0 +1,58 @@
+name: Spack buildcache build
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+    inputs:
+      fresh:
+        type: boolean
+        description: Create a fresh buildcache
+        default: false
+
+env:
+  SPACK_BACKTRACE: 1
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
+
+    - name: Setup Spack
+      uses: spack/setup-spack@5ab3c91bdefffffad9a7e45d1d156146afebb3a7 # v2.1.1
+
+    - name: Find compilers
+      run: spack -e . compiler find --mixed-toolchain
+
+    - name: Set buildcache
+      run: |
+        spack mirror add --unsigned upstream oci://ghcr.io/spack/github-actions-buildcache
+        spack mirror add --unsigned github-actions-buildcache oci://ghcr.io/dalg24/PsimagLite
+
+    - name: Concretize (fresh)
+      run: spack -e . -v concretize --fresh
+      if: ${{ github.event.inputs.fresh == 'true' }}
+
+    - name: Concretize (reuse)
+      run: spack -e . -v concretize
+      if: ${{ github.event.inputs.fresh == 'false' || github.event_name != 'workflow_dispatch' }}
+
+    - name: Install
+      run: |
+        spack -e . env depfile -o Makefile
+        make -Orecurse -j $(($(nproc) + 1))
+
+    - name: Push packages and update index
+      env:
+        GITHUB_USER: ${{ github.actor }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        spack mirror set --push --oci-username-variable GITHUB_USER --oci-password-variable GITHUB_TOKEN PsimagLite
+        spack -e . buildcache push -j $(($(nproc) + 1)) --base-image ubuntu:24.04 --update-index PsimagLite
+      if: ${{ !cancelled() }}
