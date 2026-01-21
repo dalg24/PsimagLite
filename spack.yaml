@@ -3,6 +3,7 @@ spack:
   specs:
   - matrix:
     - - ninja
+      - catch2
       - boost
       - blas
       - lapack
