@@ -6,6 +6,7 @@ spack:
       - boost
       - blas
       - lapack
+      - gsl
       - openmpi
       - hdf5 +cxx +fortran +hl +mpi ^openmpi
   concretizer:
